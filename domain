@@ -1,10 +1,15 @@
-@Pipe({
-  name: 'domain'
-})
-export class DomainPipe implements PipeTransform {
-
-  transform(value: string, name: string, domains: Domain[]): any {
-    return domains.filter(d => d.name === name && d.wert === value).map(d => d.bezeichnung)[0];
+  transform(value: any, name: string, domains: Domain[]): any {
+    if (!Array.isArray(value)) {
+      return this.transformString(value, name, domains);  
+    } else {
+      const result = [];
+      for(let i = 0; i < value.length; i++) {
+        result.push(this.transformString(value[i], name, domains));
+      }
+      return result;
+    }
    }
 
-}
+  transformString(value: any, name: string, domains: Domain[]): string {
+      return domains.filter(d => d.name === name).filter(d => d.wert === value).map(d => d.bezeichnung)[0];  
+   }
